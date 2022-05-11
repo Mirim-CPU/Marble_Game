@@ -21,6 +21,7 @@ char map1[18][100] = {
 	{"0000000000000000000000000000000010001000l00000000000000k0000000000000000000000l000000001"},
 	{"0000000000000000000000000000000011111111111111111111111111111111111111111111111111111111"}
 };
+
 char map2[18][100] = {
 	{"0"},
 	{"0"},
@@ -40,6 +41,7 @@ char map2[18][100] = {
 	{"0000000000000000000000000000000010000000000k1001k100100000010000000010100000000001000001"},
 	{"0000000000000000000000000000000011111111111111111111111111111111111111111111111111111111"} 
 };
+
 char map3[18][100] = {	
 	{"0"},
 	{"0"},
@@ -59,6 +61,7 @@ char map3[18][100] = {
 	{"000000000000000000000000000000001000100000l000l00010001000111100000010101000000010000001"},
 	{"0000000000000000000000000000000011111111111111111111111111111111111111111111111111111111"} 
 };
+
 char map4[18][100] = {	
 	{"0"},
 	{"0"},
@@ -78,11 +81,12 @@ char map4[18][100] = {
 	{"000000000000000000000000000000001000100000l000l00010001000111100000010101000000010000001"},
 	{"0000000000000000000000000000000011111111111111111111111111111111111111111111111111111111"}
 };
+
 void drawMap(int* x, int* y) {
 	system("cls");
 	int h, w; //세로, 가로
-	for (h = 0; h < 18; h++) { //세로 길이까지
-		for (w = 0; w < 100; w++) { //가로 길이까지
+	for (h = 0; h < 18; h++) { 
+		for (w = 0; w < 100; w++) {
 			char temp = tempMap[h][w];	//현재의 맴 데이터
 			if (temp == '0') {	//빈 공간(공백)
 				setColor(black, black);
@@ -126,20 +130,16 @@ void gLoop(int mapCode) {
 	int move_key;
 
 	if (mapCode == 0) {
-		memcpy(tempMap, map1, sizeof(tempMap));
-		DELAY = 10000;
+		memcpy(tempMap, map1, sizeof(tempMap)); DELAY = 10000;
 	}
 	else if (mapCode == 1) {
-		memcpy(tempMap, map2, sizeof(tempMap));
-		DELAY = 30000;
+		memcpy(tempMap, map2, sizeof(tempMap));	DELAY = 30000;
 	}
 	else if (mapCode == 2) {
-		memcpy(tempMap, map3, sizeof(tempMap));
-		DELAY = 40000;
+		memcpy(tempMap, map3, sizeof(tempMap));	DELAY = 40000;
 	}
 	else if (mapCode == 3) {
-		memcpy(tempMap, map4, sizeof(tempMap));
-		DELAY = 44000;
+		memcpy(tempMap, map4, sizeof(tempMap));	DELAY = 44000;
 	}
 
 	switch (drawlevel()) {
@@ -168,7 +168,7 @@ void gLoop(int mapCode) {
 
 		switch (move_key) {
 		case UP:	//위로움직이기
-			move(&x, &y, 0, -1, &key, &playing);	//x,y 방향으로 이동할칸
+			move(&x, &y, 0, -1, &key, &playing);
 			break;
 
 		case DOWN:	//아래로움직이기
@@ -190,12 +190,11 @@ void gLoop(int mapCode) {
 			playing = 0;	//0이 되면 반복 종료
 		}
 	}
-	if (!playing) {
-		endDraw();
+	if (!playing) { 
+		endDraw(); 
 	}
 }
 
-//플레이어 좌표를 조작할 함수
 //원래 좌표(x, y), 증감할 좌표(_x, _y)
 void move(int* x, int* y, int _x, int _y, int* key, int* playing) {
 	//이동할 위치에 있는 맵 배열의 문자 임시저장
@@ -231,15 +230,16 @@ void move(int* x, int* y, int _x, int _y, int* key, int* playing) {
 	}
 }
 
-void keyControl(int x, int y)
+int keyControl(int x, int y, int num)
 {
-	int n;
+	int input;
 	int key = y;
+
 	while (1) {
-		n = _getch();
-		switch (n) {
+		input = _getch();
+		switch (input) {
 		case UP: {
-			if (y > 14) {
+			if (y > key) {
 				gotoxy(x - 2, y);
 				printf(" ");
 				gotoxy(x - 2, --y);
@@ -248,7 +248,7 @@ void keyControl(int x, int y)
 			break;
 		}
 		case DOWN: {
-			if (y < 18) {
+			if (y < key + num) {
 				gotoxy(x - 2, y);
 				printf(" ");
 				gotoxy(x - 2, ++y);
@@ -257,10 +257,11 @@ void keyControl(int x, int y)
 			break;
 		}
 		case ENTER: {
-			return y - 14;
+			return y - key;
 		}
 		}
 	}
+	return 0;
 }
 
 //게임 하단에 좌표 및 아이템 정보 출력
@@ -306,34 +307,8 @@ int drawlevel()
 	printf("중단계");
 	gotoxy(x, y + 2);
 	printf("상단계");
-	
-	
-	while (1) {
-		level_n = _getch();
-		switch (level_n) {
-			case UP: {
-				if (y > 6) {
-					gotoxy(x - 2, y);
-					printf(" ");
-					gotoxy(x - 2, --y);
-					printf(">");
-				}
-				break;
-			}
-			case DOWN: {
-				if (y < 8) {
-					gotoxy(x - 2, y);
-					printf(" ");
-					gotoxy(x - 2, ++y);
-					printf(">");
-				}
-				break;
-			}
-			case ENTER: {
-				return y - 6;
-			}
-		}
-	}	
+
+	return keyControl(x, y, 2);
 }
 
 void titleDraw() {
@@ -364,6 +339,7 @@ int menuDraw() {
 	gotoxy(x - 15, y + 3);
 	printf("developed by 배서연, 하진, 이혜령");
 	setColor(white, black);
+
 	while (1) {
 		input = _getch();
 		if (input == ENTER)	return 1;
@@ -402,33 +378,10 @@ int maplistDraw() {
 	printf("\t\t \t\t\t\t\t\t\t\t          || |  \\\\ \\ \n");
 	printf("\t\t \t\t\t\t\t\t\t\t        ((,_|  ((,_\\ \n");
 	printf("\t\t\t\t\t\t\t\t\t\t\t -----------------------");
-	while (1) {
-		n = _getch();
-		switch (n){
-			case UP: {
-				if (y > 14) {
-					gotoxy(x - 2, y);
-					printf(" ");
-					gotoxy(x - 2, --y);
-					printf(">");
-				}
-				break;
-			}
-			case DOWN: {	
-				if (y < 18) {
-					gotoxy(x - 2, y);
-					printf(" ");
-					gotoxy(x - 2, ++y);
-					printf(">");
-				}
-				break;
-			}
-			case ENTER: {
-				return y - 14;
-			}
-		}
-	}
+	
+	return keyControl(x, y, 4);
 }
+
 void endDraw() {
 	system("cls");
 	int x = 40, y = 5;	int input;
@@ -451,11 +404,13 @@ void endDraw() {
 	gotoxy(50, 25);
 	setColor(yellow, black);
 	printf("개발자 : 배서연, 이혜령, 하진");
+
 	while (1) {
 		input = _getch();
 		if (input == ENTER) break;
 	}
 }
+
 void failDraw()
 {
 	int n;
@@ -467,7 +422,8 @@ void failDraw()
 	printf("\t\t\t\t  | (_ |/ _ \\| |\\/| | _|  | (_) \\ V /| _||   / \n");
 	printf("\t\t\t\t   \\___/_/ \\_\\_|  |_|___|  \\___/ \\_/ |___|_|_\\ \n");
 	gotoxy(40, 16);
-	printf("시간 내에 탈출하지 못해서 사망하셨습니다. 엔터를 눌러서 돌아가십시오.");
+	printf("\t시간 내에 탈출하지 못해서 사망하셨습니다. 엔터를 눌러서 돌아가십시오.");
+
 	while (1) {
 		n = _getch();
 		if (n == ENTER) break;
@@ -478,6 +434,7 @@ void failDraw()
 int main() {
 	init();
 	int level_num;
+
 	while (1) {
 		titleDraw();
 		if (menuDraw()) {

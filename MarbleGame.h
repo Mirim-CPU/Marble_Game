@@ -12,7 +12,7 @@ void gotoxy(int, int);
 void setColor(int, int);
 void gLoop(int);
 void move(int*, int*, int, int, int*, int*);
-void keyControl(int, int);
+int keyControl(int, int, int);
 int menuDraw();
 int maplistDraw();
 void drawMap(int*, int*);
